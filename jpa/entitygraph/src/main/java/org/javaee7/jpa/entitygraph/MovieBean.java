@@ -4,7 +4,10 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Arun Gupta
@@ -14,6 +17,13 @@ import java.util.List;
 public class MovieBean {
     @PersistenceContext
     private EntityManager entityManager;
+
+    public Movie findMovieById(Integer movieId, String hint, String graphName) {
+        Map<String, Object> properties = new HashMap<>();
+        properties.put(hint, entityManager.getEntityGraph(graphName));
+
+        return entityManager.find(Movie.class, movieId, properties);
+    }
 
     public List<Movie> listMovies() {
         return entityManager.createNamedQuery("Movie.findAll")
